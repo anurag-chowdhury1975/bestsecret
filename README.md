@@ -1,5 +1,3 @@
-<a href="https://propulsion.academy/"><img src="https://static.swissdevjobs.ch/pictures/propulsion-academy-logo.png" title="Propulsion Academy" alt="Learn how to become a Data Scientist with Propulsion Academy"></a>
-
 # BestSecret Image Classification Project 
 
 This repository contains complete Propulsion Academy students' final project on BestSecret's Image Classification Project using baseline CNN models and Transfer Learning from popular pre-built models such as ResNet50, EfficientNetB0 and InceptionNet-V3. 
