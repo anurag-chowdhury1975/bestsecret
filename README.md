@@ -20,7 +20,7 @@ The goal of the project is to come up with an image view classification model fo
 
 Here is an example of the 5 different image views for the clothes product category:
 
-<img src="img/best_secret_looks.jpeg" title="Github Logo" width="100%">
+<img src="img/best_secret_looks.png" title="Github Logo" width="100%">
 
 ## Data 
 
@@ -53,7 +53,7 @@ The following python notebooks have the code used to train, validate and test ou
 The best models we got were the RestNet50 transfer learbing models across all product categories.
 Here are the results:
 
-<img src="img/results.jpeg" title="Results" width="100%">
+<img src="img/results.png" title="Results" width="100%">
 
 Here is a sample prediction:
 
