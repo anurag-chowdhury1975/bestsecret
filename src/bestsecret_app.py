@@ -14,7 +14,7 @@ from tensorflow.keras.applications import imagenet_utils
 from tensorflow.data import Dataset
 from sklearn.metrics import confusion_matrix, classification_report, accuracy_score
 from struct import unpack
-from tqdm import tqdm
+# from tqdm import tqdm
 
 # @st.cache_data    
 def load_models():
@@ -45,8 +45,9 @@ def eval_model_on_test(model, test_ds):
     test_labels = []
     predictions = []
 
-    for imgs, labels in tqdm(test_ds.take(1000),
-                             desc='Predicting on Test Data'):
+    # for imgs, labels in tqdm(test_ds.take(1000),
+    #                          desc='Predicting on Test Data'):
+    for imgs, labels in test_ds.take(1000):
         batch_preds = model.predict(imgs)
         predictions.extend(batch_preds)
         test_labels.extend(labels)
