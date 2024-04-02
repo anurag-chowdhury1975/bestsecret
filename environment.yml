@@ -1,5 +1,6 @@
 name: best_secret
 channels:
+  - anaconda
   - conda-forge
   - defaults
 dependencies:
