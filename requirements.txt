@@ -1,6 +1,6 @@
 matplotlib
 tensorflow
-opencv
+opencv-python
 scikit-learn
 streamlit
 requests
