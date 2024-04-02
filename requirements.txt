@@ -1,0 +1,6 @@
+matplotlib
+tensorflow
+opencv
+scikit-learn
+streamlit
+requests
