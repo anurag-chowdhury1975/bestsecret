@@ -1,5 +1,6 @@
 ## Exclude data from source control by default ##
 /data/
+/models/
 
 ## Compressed Files ##
 *.zip
