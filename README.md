@@ -138,8 +138,8 @@ Your local project folder structure should look like this after you download the
     * models
         * bag_resnet50_model_ft_all_93%.h5
         * clothes_resnet50_func_model_97%.h5
-        * models/schuhe_resnet50_model_ft_all_94%.h5
-        * models/waesch_funcResnet_model_94%.h5
+        * schuhe_resnet50_model_ft_all_94%.h5
+        * waesch_funcResnet_model_94%.h5
 
 **Step 6**
 
