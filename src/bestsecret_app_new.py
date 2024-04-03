@@ -6,6 +6,8 @@ import pandas as pd
 import os
 import cv2
 import math
+import requests
+from io import BytesIO
 from PIL import Image
 import gradcam as gcam # Helper file contains the class definition for GradCAM
 from tensorflow.keras.models import load_model
@@ -18,13 +20,23 @@ from struct import unpack
 
 st.set_page_config(page_title="Image View Classifier", layout="wide")
 
-@st.cache_resource    
+@st.cache
+def load_model_from_gdrive(url):
+    response = requests.get(url)
+    model_file = BytesIO(response.content)
+    model = load_model(model_file)
+    return model
+    
 def load_models():
     models = {}
-    model_bag = load_model('models/bag_resnet50_model_ft_all_93%.h5', custom_objects={'imagenet_utils': imagenet_utils})
-    model_clothes = load_model('models/clothes_resnet50_func_model_97%.h5', custom_objects={'imagenet_utils': imagenet_utils})
-    model_schuhe = load_model('models/schuhe_resnet50_model_ft_all_94%.h5', custom_objects={'imagenet_utils': imagenet_utils})
-    model_waesche = load_model('models/waesch_funcResnet_model_94%.h5', custom_objects={'imagenet_utils': imagenet_utils})
+    # model_bag = load_model('models/bag_resnet50_model_ft_all_93%.h5', custom_objects={'imagenet_utils': imagenet_utils})
+    # model_clothes = load_model('models/clothes_resnet50_func_model_97%.h5', custom_objects={'imagenet_utils': imagenet_utils})
+    # model_schuhe = load_model('models/schuhe_resnet50_model_ft_all_94%.h5', custom_objects={'imagenet_utils': imagenet_utils})
+    # model_waesche = load_model('models/waesch_funcResnet_model_94%.h5', custom_objects={'imagenet_utils': imagenet_utils})
+    model_bag = load_model_from_gdrive('https://drive.google.com/file/d/1VSitaSvcEuzNIPI_Mb1lIk9N4hBYVBWb/view?usp=sharing')
+    model_clothes = load_model_from_gdrive('https://drive.google.com/file/d/1oCca1FE8YkAwo3GSglCCNWABdVnZdntX/view?usp=sharing')
+    model_schuhe = load_model_from_gdrive('https://drive.google.com/file/d/1K83mAjX2mgp3uRaZ9-KjboXdjo6gq6k7/view?usp=sharing')
+    model_waesche = load_model_from_gdrive('https://drive.google.com/file/d/1rMPdC4mGvUQ8JMreQnyP5GP_tcRqTsTq/view?usp=sharing')
     models['bag'] = model_bag
     models['clothes'] = model_clothes
     models['schuhe'] = model_schuhe
