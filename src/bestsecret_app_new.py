@@ -20,7 +20,7 @@ from struct import unpack
 
 st.set_page_config(page_title="Image View Classifier", layout="wide")
 
-@st.cache
+@st.cache_resource
 def load_model_from_gdrive(url):
     response = requests.get(url)
     model_file = BytesIO(response.content)
@@ -33,10 +33,17 @@ def load_models():
     # model_clothes = load_model('models/clothes_resnet50_func_model_97%.h5', custom_objects={'imagenet_utils': imagenet_utils})
     # model_schuhe = load_model('models/schuhe_resnet50_model_ft_all_94%.h5', custom_objects={'imagenet_utils': imagenet_utils})
     # model_waesche = load_model('models/waesch_funcResnet_model_94%.h5', custom_objects={'imagenet_utils': imagenet_utils})
-    model_bag = load_model_from_gdrive('https://drive.google.com/file/d/1VSitaSvcEuzNIPI_Mb1lIk9N4hBYVBWb/view?usp=sharing')
-    model_clothes = load_model_from_gdrive('https://drive.google.com/file/d/1oCca1FE8YkAwo3GSglCCNWABdVnZdntX/view?usp=sharing')
-    model_schuhe = load_model_from_gdrive('https://drive.google.com/file/d/1K83mAjX2mgp3uRaZ9-KjboXdjo6gq6k7/view?usp=sharing')
-    model_waesche = load_model_from_gdrive('https://drive.google.com/file/d/1rMPdC4mGvUQ8JMreQnyP5GP_tcRqTsTq/view?usp=sharing')
+
+    # model_bag = load_model_from_gdrive('https://drive.google.com/file/d/1VSitaSvcEuzNIPI_Mb1lIk9N4hBYVBWb/view?usp=sharing')
+    # model_clothes = load_model_from_gdrive('https://drive.google.com/file/d/1oCca1FE8YkAwo3GSglCCNWABdVnZdntX/view?usp=sharing')
+    # model_schuhe = load_model_from_gdrive('https://drive.google.com/file/d/1K83mAjX2mgp3uRaZ9-KjboXdjo6gq6k7/view?usp=sharing')
+    # model_waesche = load_model_from_gdrive('https://drive.google.com/file/d/1rMPdC4mGvUQ8JMreQnyP5GP_tcRqTsTq/view?usp=sharing')
+
+    model_bag = load_model_from_gdrive('https://drive.google.com/uc?id=1VSitaSvcEuzNIPI_Mb1lIk9N4hBYVBWb')
+    model_clothes = load_model_from_gdrive('https://drive.google.com/uc?id=1oCca1FE8YkAwo3GSglCCNWABdVnZdntX')
+    model_schuhe = load_model_from_gdrive('https://drive.google.com/uc?id=1K83mAjX2mgp3uRaZ9-KjboXdjo6gq6k7')
+    model_waesche = load_model_from_gdrive('https://drive.google.com/uc?id=1rMPdC4mGvUQ8JMreQnyP5GP_tcRqTsTq')
+
     models['bag'] = model_bag
     models['clothes'] = model_clothes
     models['schuhe'] = model_schuhe
@@ -53,40 +60,6 @@ def image_processing_function(im_path, input_img_dims, pre_process_function=None
     image_arr = np.expand_dims(image_arr, axis=0)
 
     return img, image_arr, orig_arr
-
-def eval_model_on_test(model, test_ds):
-
-    test_labels = []
-    predictions = []
-
-    # for imgs, labels in tqdm(test_ds.take(1000),
-    #                          desc='Predicting on Test Data'):
-    for imgs, labels in test_ds.take(1000):
-        batch_preds = model.predict(imgs)
-        predictions.extend(batch_preds)
-        test_labels.extend(labels)
-    if len(predictions[0]) > 1:
-        predictions_max = np.argmax(predictions, axis=1)
-    else:
-        predictions_max = np.array(predictions)
-
-    test_labels = np.array(test_labels)
-
-    return test_labels, predictions_max, predictions
-
-def get_mismatches(y_true, y_pred, BATCH_SIZE):
-    num_mismatches = 0
-    mismatch_tensor_indexes = {}
-    for i in range(len(y_true)):
-      if y_true[i] != y_pred[i]:
-        num_mismatches += 1
-        key = (i//BATCH_SIZE)
-        tensor_index = (i % BATCH_SIZE)
-        if mismatch_tensor_indexes.get(key) is not None:
-          mismatch_tensor_indexes[key].append((tensor_index, i))
-        else:
-          mismatch_tensor_indexes[key] = [(tensor_index, i)]
-    return num_mismatches, mismatch_tensor_indexes
 
 models = load_models()
 BATCH_SIZE = 32
