@@ -12,6 +12,7 @@ class GradCAM:
         self.model = model
         self.classIdx = classIdx
         self.layerName = layerName
+        print(type(model))
 
         # if the layer name is None, attempt to automatically find
         # the target output layer
@@ -22,12 +23,12 @@ class GradCAM:
 
         # attempt to find the final convolutional layer in the network
         # by looping over the layers of the network in reverse order
-        print("Looging through model layers")
+        print("Looping through model layers")
         print(type(self.model.layers))
         for layer in reversed(self.model.layers):
             print(type(layer))
             # check to see if the layer has a 4D output
-            if len(layer.output_shape) == 4:
+            if len(layer.output.shape) == 4:
                 return layer.name
 
         # otherwise, we could not find a 4D layer so the GradCAM
