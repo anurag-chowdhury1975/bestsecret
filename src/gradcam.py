@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 import cv2 # open cv
+import os
 from tensorflow.keras.models import Model
 
 class GradCAM:
@@ -12,7 +13,6 @@ class GradCAM:
         self.model = model
         self.classIdx = classIdx
         self.layerName = layerName
-        print(type(model))
 
         # if the layer name is None, attempt to automatically find
         # the target output layer
@@ -23,10 +23,7 @@ class GradCAM:
 
         # attempt to find the final convolutional layer in the network
         # by looping over the layers of the network in reverse order
-        print("Looping through model layers")
-        print(type(self.model.layers))
         for layer in reversed(self.model.layers):
-            print(type(layer))
             # check to see if the layer has a 4D output
             if len(layer.output.shape) == 4:
                 return layer.name
@@ -42,6 +39,7 @@ class GradCAM:
         # (1) the inputs to our pre-trained model
         # (2) the output of the (presumably) final 4D layer in the network
         # (3) the output of the softmax activations from the model
+        os.write(1, f"{self.model.inputs}\n".encode()) 
         gradModel = Model(
             inputs=[self.model.inputs],
             outputs=[self.model.get_layer(self.layerName).output,
