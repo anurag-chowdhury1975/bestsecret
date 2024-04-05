@@ -1,48 +1,33 @@
 import streamlit as st
-import requests
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import os
 import cv2
-import math
-import requests
-from io import BytesIO
-from PIL import Image
+import boto3
 import gradcam as gcam # Helper file contains the class definition for GradCAM
+
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications import imagenet_utils
-from tensorflow.data import Dataset
-from sklearn.metrics import confusion_matrix, classification_report, accuracy_score
-from struct import unpack
-# from tqdm import tqdm
+
+S3_KEY_ID = st.secrets["AWS_ACCESS_KEY_ID"]
+S3_SECRET_KEY = st.secrets["AWS_SECRET_ACCESS_KEY"]
+S3_REGION = st.secrets["AWS_DEFAULT_REGION"]
 
 st.set_page_config(page_title="Image View Classifier", layout="wide")
+client_s3 = boto3.client("s3", region_name=S3_REGION, aws_access_key_id=S3_KEY_ID, aws_secret_access_key=S3_SECRET_KEY)
 
 @st.cache_resource
-def load_model_from_gdrive(url):
-    response = requests.get(url)
-    model_file = BytesIO(response.content)
-    model = load_model(model_file)
-    return model
-    
 def load_models():
     models = {}
-    # model_bag = load_model('models/bag_resnet50_model_ft_all_93%.h5', custom_objects={'imagenet_utils': imagenet_utils})
-    # model_clothes = load_model('models/clothes_resnet50_func_model_97%.h5', custom_objects={'imagenet_utils': imagenet_utils})
-    # model_schuhe = load_model('models/schuhe_resnet50_model_ft_all_94%.h5', custom_objects={'imagenet_utils': imagenet_utils})
-    # model_waesche = load_model('models/waesch_funcResnet_model_94%.h5', custom_objects={'imagenet_utils': imagenet_utils})
+    result = client_s3.download_file("bestsecret-models",'bag_resnet50_model_ft_all_93pct.h5', "/tmp/bag_resnet50_model_ft_all_93pct.h5")
+    result = client_s3.download_file("bestsecret-models",'clothes_resnet50_func_model_97pct.h5', "/tmp/clothes_resnet50_func_model_97pct.h5")
+    result = client_s3.download_file("bestsecret-models",'schuhe_resnet50_model_ft_all_94pct.h5', "/tmp/schuhe_resnet50_model_ft_all_94pct.h5")
+    result = client_s3.download_file("bestsecret-models",'waesch_funcResnet_model_94pct.h5', "/tmp/waesch_funcResnet_model_94pct.h5")
 
-    # model_bag = load_model_from_gdrive('https://drive.google.com/file/d/1VSitaSvcEuzNIPI_Mb1lIk9N4hBYVBWb/view?usp=sharing')
-    # model_clothes = load_model_from_gdrive('https://drive.google.com/file/d/1oCca1FE8YkAwo3GSglCCNWABdVnZdntX/view?usp=sharing')
-    # model_schuhe = load_model_from_gdrive('https://drive.google.com/file/d/1K83mAjX2mgp3uRaZ9-KjboXdjo6gq6k7/view?usp=sharing')
-    # model_waesche = load_model_from_gdrive('https://drive.google.com/file/d/1rMPdC4mGvUQ8JMreQnyP5GP_tcRqTsTq/view?usp=sharing')
-
-    model_bag = load_model_from_gdrive('https://drive.google.com/uc?id=1VSitaSvcEuzNIPI_Mb1lIk9N4hBYVBWb')
-    model_clothes = load_model_from_gdrive('https://drive.google.com/uc?id=1oCca1FE8YkAwo3GSglCCNWABdVnZdntX')
-    model_schuhe = load_model_from_gdrive('https://drive.google.com/uc?id=1K83mAjX2mgp3uRaZ9-KjboXdjo6gq6k7')
-    model_waesche = load_model_from_gdrive('https://drive.google.com/uc?id=1rMPdC4mGvUQ8JMreQnyP5GP_tcRqTsTq')
+    model_bag = load_model("/tmp/bag_resnet50_model_ft_all_93pct.h5", custom_objects={'imagenet_utils': imagenet_utils})
+    model_clothes = load_model('/tmp/clothes_resnet50_func_model_97pct.h5', custom_objects={'imagenet_utils': imagenet_utils})
+    model_schuhe = load_model('/tmp/schuhe_resnet50_model_ft_all_94pct.h5', custom_objects={'imagenet_utils': imagenet_utils})
+    model_waesche = load_model('/tmp/waesch_funcResnet_model_94pct.h5', custom_objects={'imagenet_utils': imagenet_utils})
 
     models['bag'] = model_bag
     models['clothes'] = model_clothes
@@ -97,11 +82,6 @@ with st.form("my-form", clear_on_submit=True):
     submitted = st.form_submit_button("Predict Image View!")
     if submitted:
         if len(uploaded_images) > 0:
-            # st.markdown('''
-            #     <style>
-            #         .uploadedFile {display: none}
-            #     <style>''',
-            #     unsafe_allow_html=True)
             container_summary = st.container(border=True)
             num_pred_match = 0
             match_tab, mismatch_tab = st.tabs(["Matched Predictions", "Mismatched Predictions"])
@@ -140,4 +120,4 @@ with st.form("my-form", clear_on_submit=True):
                                     f'- {view_labels.get(prod_cat)[df["index"][4]]} = {round(df["probs"][4]*100, 2)}%\n\n'
                                     )
             accuracy = round(((num_pred_match / len(uploaded_images))*100), 2)
-            container_summary.markdown(f"<p style='font-size:18px;'><b>{num_pred_match}</b> predictions out of a total of <b>{len(uploaded_images)}</b> images match the selected product view. Accurcy = <b>{accuracy}%</b></p>", unsafe_allow_html=True)
+            container_summary.markdown(f"<p style='font-size:18px;'><b>{num_pred_match}</b> predictions out of a total of <b>{len(uploaded_images)}</b> images match the selected product view. Accuracy = <b>{accuracy}%</b></p>", unsafe_allow_html=True)
