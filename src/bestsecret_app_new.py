@@ -100,16 +100,16 @@ with st.form("my-form", clear_on_submit=True):
 
                 left_column.image(img)
 
-                # gc = gcam.GradCAM(model=model, classIdx=predicted_label_index)
-                # heatmap = gc.compute_heatmap(img_arr, verbose=True)
-                # heatmap = cv2.resize(heatmap, (orig.shape[1], orig.shape[0]),
-                #                     interpolation=cv2.INTER_CUBIC)
-                # (heatmap, output) = gc.overlay_heatmap(heatmap, orig, alpha=0.45)
-                # heatmap = cv2.cvtColor(heatmap, cv2.COLOR_BGR2RGB)
-                # output = cv2.cvtColor(output, cv2.COLOR_BGR2RGB)
+                gc = gcam.GradCAM(model=model, classIdx=predicted_label_index)
+                heatmap = gc.compute_heatmap(img_arr, verbose=True)
+                heatmap = cv2.resize(heatmap, (orig.shape[1], orig.shape[0]),
+                                    interpolation=cv2.INTER_CUBIC)
+                (heatmap, output) = gc.overlay_heatmap(heatmap, orig, alpha=0.45)
+                heatmap = cv2.cvtColor(heatmap, cv2.COLOR_BGR2RGB)
+                output = cv2.cvtColor(output, cv2.COLOR_BGR2RGB)
 
-                # middle_column.image(output)
-                middle_column.image(img)
+                middle_column.image(output)
+                # middle_column.image(img)
 
                 df = pd.DataFrame({"probs": predictions[0]}).sort_values(by="probs", ascending=False).reset_index()
                 right_column.markdown(f'**Predicted View = {predicted_label}**\n\n'
