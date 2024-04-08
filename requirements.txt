@@ -4,5 +4,5 @@ streamlit==1.31.0
 numpy==1.26.3
 pandas==2.1.4
 boto3==1.34.78 
-tensorflow==2.11.0
-keras==2.11.0
+tensorflow==2.15.0
+keras==2.15.0
