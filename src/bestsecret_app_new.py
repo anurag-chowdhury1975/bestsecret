@@ -13,7 +13,7 @@ from tensorflow.keras.applications import imagenet_utils
 S3_KEY_ID = st.secrets["AWS_ACCESS_KEY_ID"]
 S3_SECRET_KEY = st.secrets["AWS_SECRET_ACCESS_KEY"]
 S3_REGION = st.secrets["AWS_DEFAULT_REGION"]
-
+ 
 st.set_page_config(page_title="Image View Classifier", layout="wide")
 client_s3 = boto3.client("s3", region_name=S3_REGION, aws_access_key_id=S3_KEY_ID, aws_secret_access_key=S3_SECRET_KEY)
 
