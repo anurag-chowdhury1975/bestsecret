@@ -74,7 +74,7 @@ input_img_dims = (427, 350)
 st.header("Image View Classifier")
 # Create an expandable container for the instructions
 with st.expander("Instructions on how to use the app...", expanded=False):
-    st.markdown("The image classification models in this app have been trained to classify image views associated with 4 specific product categories - Bags, Clothes, Shoes (Schuhe) and Lingerie (Waesche). The images that were used to train the models contained just one product view within each image (not multiple products/views within a single image).</br></br><b>Step 1:</b> You will need to first select which of the 4 product categories you want the model to predict the views for.<br><b>Step 2:</b> If you want the model to automatically classify and group the views for the images you upload, you can leave the view selection as 'Multiple/All'. If you already already have images grouped by view, then you can select the specific view and cross check what the model predicts. This can help you identify images that you may have grouped incorrectly, or if you are sure you have grouped them correctly, then it will tell you how accuarte the model predictions are.", unsafe_allow_html=True)
+    st.markdown("The image classification models in this app have been trained to classify image views associated with 4 specific product categories - Bags, Clothes, Shoes (Schuhe) and Lingerie (Waesche). The images that were used to train the models contained <b>just one product view within each image</b> (not multiple products/views within a single image) on a <b>blank background</b>. In order to get accurate predictions from the model you need to upload images with those characteristics (refer to sample images below).</br></br><b>Step 1:</b> You will need to first select which of the 4 product categories you want the model to predict the views for.<br><b>Step 2:</b> If you want the model to automatically classify and group the views for the images you upload, you can leave the view selection as 'Multiple/All'. If you already already have images grouped by view, then you can select the specific view and cross check what the model predicts. This can help you identify images that you may have grouped incorrectly, or if you are sure you have grouped them correctly, then it will tell you how accuarte the model predictions are.", unsafe_allow_html=True)
     st.markdown("<b>For Bags</b>, here are sample images for the 5 different views that the model expects.", unsafe_allow_html=True)
     st.image('img/bag_views.png', width=700)
     st.markdown("<b>For Clothes</b>, here are sample images for the 5 different views that the model expects.", unsafe_allow_html=True)
@@ -128,7 +128,8 @@ with st.form("my-form", clear_on_submit=True):
                         container_tab4 = view_tab4.container(border=True)
                         left_column, middle_column, right_column = container_tab4.columns([1,1,1])
 
-                    left_column.image(img)
+                    # left_column.image(img)
+                    left_column.image(orig)
 
                     gc = gcam.GradCAM(model=model, classIdx=predicted_label_index)
                     heatmap = gc.compute_heatmap(img_arr, verbose=True)
@@ -167,7 +168,8 @@ with st.form("my-form", clear_on_submit=True):
                         container_mismatch = mismatch_tab.container(border=True)
                         left_column, middle_column, right_column = container_mismatch.columns([1,1,1])
 
-                    left_column.image(img)
+                    # left_column.image(img)
+                    left_column.image(orig)
 
                     gc = gcam.GradCAM(model=model, classIdx=predicted_label_index)
                     heatmap = gc.compute_heatmap(img_arr, verbose=True)
