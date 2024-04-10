@@ -26,7 +26,7 @@ The raw image data for each of the 4 product categories and 5 image views were p
 
 ## Requirements
 
-The [Environment](environment.yml)
+The [Requirements](requirements.txt)
  file contains all the necessary python packages.  
 
 
